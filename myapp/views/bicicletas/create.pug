@@ -1,0 +1,22 @@
+extends ../layout
+
+block content 
+    h1.text-center Crear una nueva bicicleta
+    br
+    form(action="#", method="post") 
+        .form-group
+            .form-group
+                label(for="text") id 
+                input(type="text", name="id" autofocus=true)
+            .form-group
+                label(for="text") color 
+                input(type="text", name="color") 
+            .form-group
+                label(for="text") modelo
+                input(type="text", name="modelo") 
+            .form-group
+                label(for="text") Ubicacion 
+                input(type="text", name="lat") lat
+                input(type="text", name="long") long
+            button.btn.btn-primary(type='submit') Crear 
+        

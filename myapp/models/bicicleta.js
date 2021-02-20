@@ -10,16 +10,38 @@ Bicicleta.prototype.toString = function() {
 }
 
 Bicicleta.allBicis = [];
+
 Bicicleta.agregarBici = function(unaBici) {
     Bicicleta.allBicis.push(unaBici);
 }
 
-var kore = new Bicicleta(1, 'Beige', 'MTB', 'JA');
-var slp = new Bicicleta(2, 'rojo/azul', 'MTB', 'JA');
+Bicicleta.findBiciById = function(idBici) {
+    var unaBici = Bicicleta.allBicis.find(x => x.id === idBici);
+    if (unaBici) {
+        return unaBici;
+    } else {
+        throw new Error(`No existe una bici con el id: ${idBici}`);
+    }
 
-Bicicleta.agregarBici(kore);
-Bicicleta.agregarBici(slp);
-Bicicleta.agregarBici(slp);
-Bicicleta.agregarBici(slp);
+}
+Bicicleta.updateBiciById = function(id) {
+
+}
+Bicicleta.deleteBiciById = function(idBici) {
+    for (let i = 0; i < Bicicleta.length; i++) {
+        if (Bicicleta.allBicis[i].id === idBici) {
+            Bicicleta.allBicis.splice(i, 1);
+            break;
+        }
+
+    }
+}
+
+// var slp = new Bicicleta(2, 'rojo/azul', 'MTB', 'JA');
+
+// Bicicleta.agregarBici(kore);
+// Bicicleta.agregarBici(slp);
+// Bicicleta.agregarBici(slp);
+// Bicicleta.agregarBici(slp);
 
 module.exports = Bicicleta;
