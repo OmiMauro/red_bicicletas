@@ -3,20 +3,22 @@ extends ../layout
 block content 
     h1.text-center Crear una nueva bicicleta
     br
-    form(action="#", method="post") 
-        .form-group
+    form(action="#" method="post") 
+        .container 
             .form-group
                 label(for="text") id 
-                input(type="text", name="id" autofocus=true)
+                input(type="text" name="id" autofocus=true)
             .form-group
                 label(for="text") color 
-                input(type="text", name="color") 
+                input(type="text" name="color") 
             .form-group
                 label(for="text") modelo
-                input(type="text", name="modelo") 
+                input(type="text" name="modelo") 
             .form-group
                 label(for="text") Ubicacion 
-                input(type="text", name="lat") lat
-                input(type="text", name="long") long
+                br  
+                label(for="text") Latitud  
+                input(type="text" name="lat")
+                label(for="text") Longitud  
+                input(type="text" name="long") 
             button.btn.btn-primary(type='submit') Crear 
-        
