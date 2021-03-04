@@ -12,7 +12,7 @@ exports.bicicletas_create = function(req, res) {
     //bici.ubicacion = [req.body.lat, req.body.long];
     Bicicleta.agregarBici(bici);
     res.status(200).json({ bicicleta: bici });
-
+    res.redirect('/');
 }
 
 exports.bicicletas_crearView = function(req, res) {

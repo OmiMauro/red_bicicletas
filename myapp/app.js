@@ -3,12 +3,15 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+var mongoose = require('../myapp/db/db');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var biciRouter = require('./routes/bicicletas');
 var biciRouterAPI = require('./routes/api/bicicletasRoutes');
-
+var usersAPI = require('./routes/api/usuarioRoutes');
+var tokenRoute = require('./routes/apinn/tokenRoutes');
+var loginRoute = require('../myapp/routes/login');
 var app = express();
 
 // view engine setup
@@ -25,11 +28,10 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/bicicletas', biciRouter);
 app.use('/api/bicicletas/', biciRouterAPI);
-
-
-var mongoose = require('../myapp/db/db')
-
-// catch 404 and forward to error handler
+app.use('/usuarios', usersAPI);
+app.use('/token', tokenRoute);
+app.use('/login', loginRoute)
+    // catch 404 and forward to error handler
 app.use(function(req, res, next) {
     next(createError(404));
 });
@@ -43,6 +45,7 @@ app.use(function(err, req, res, next) {
     // render the error page
     res.status(err.status || 500);
     res.render('error');
+
 });
 
 module.exports = app;
