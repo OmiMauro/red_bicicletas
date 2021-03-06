@@ -54,7 +54,7 @@ usuarioSchema.plugin(uniqueValidator, {
     message: `El {PATH} ya existe con otro usuario.`
 });
 
-usuarioSchema.validPassword = function(password) {
+usuarioSchema.methods.validPassword = function(password) {
     return bcrypt.compareSync(password, this.password);
 };
 usuarioSchema.methods.enviarTokenEmail = function(cb) {
@@ -81,5 +81,22 @@ usuarioSchema.methods.enviarTokenEmail = function(cb) {
     reserva.save(cb);
 }; */
 
+usuarioSchema.methods.resetPassword = function(password) {
+    var token = new Token({ _userId: this._id, token: crypto.randomBytes(16).toString('hex') });
+    var email = this.email;
+    token.save(function(err) {
+        if (err) { return console.error(err) }
+        var optionsEmail = {
+            from: 'no-reply@red-de-Bicicletas',
+            to: email,
+            subject: 'Reseteo de contrasena',
+            text: "Hola. Por favor ingrese al siguiente enlace para resetear su contraseña.\n\n" + 'http://localhost:3000' + '\/resetPassword\/' + token.token,
+        };
+        mailer.sendMail(optionsEmail, (err) => {
+            if (err) { return console.log(err) }
+            console.log("se envio un email de cambio de clave a: " + email);
+        });
+    });
+}
 
 module.exports = mongose.model('Usuario', usuarioSchema);
