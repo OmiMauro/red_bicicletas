@@ -1,5 +1,3 @@
-/* Este codigo se utiliza para obtener datos de la BD */
-
 var Bicicleta = require('../../models/bicicleta');
 
 

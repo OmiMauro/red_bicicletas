@@ -8,7 +8,7 @@ var logger = require('morgan');
 var mongoose = require('../myapp/db/db');
 var passport = require('./config/passport');
 var session = require('express-session');
-
+var jwt = require('jsonwebtoken');
 /* Routes */
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -17,12 +17,13 @@ var biciRouterAPI = require('./routes/api/bicicletasRoutes');
 var usersAPI = require('./routes/api/usuarioRoutes');
 var tokenRoute = require('./routes/api/tokenRoutes');
 var loginRoute = require('./routes/login');
+var loginRouteAPI = require('./routes/api/authRoutes');
 /* Un objeto Store para almacenar una sesion del usuario en BD */
 
 const store = new session.MemoryStore;
 
 var app = express();
-
+app.set('secretKey', "Red-De-Bicicletas123!@#$$%^&*KiliMNajOUQsOPP");
 app.use(session({
     cookie: { maxAge: 240 * 60 * 60 * 100 }, // 10 dias
     store: store,
@@ -46,12 +47,11 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/users', logeddIn, usersRouter);
 app.use('/bicicletas', logeddIn, biciRouter);
-app.use('/api/bicicletas/', biciRouterAPI);
+app.use('/api/bicicletas', validarUsuario, biciRouterAPI);
+app.use('/api/login', loginRouteAPI);
 app.use('/usuarios', logeddIn, usersAPI);
 app.use('/token', tokenRoute);
-
-
-app.use('/login/', loginRoute);
+app.use('/login', loginRoute);
 
 
 // catch 404 and forward to error handler
@@ -79,4 +79,19 @@ function logeddIn(req, res, next) {
         res.redirect('/login');
     }
 }
+
+function validarUsuario(req, res, next) {
+    jwt.verify(req.headers['x-access-token'], req.app.get('secretKey'), function(err, decoded) {
+        if (err) {
+            res.json({ status: 'error', message: err.message, data: null });
+        } else {
+            req.body.userId = decoded.id;
+            console.log('jwt verify.\nToken:' + decoded.id);
+            next();
+        }
+    });
+}
+
+
+
 module.exports = app;

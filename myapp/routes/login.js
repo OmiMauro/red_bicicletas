@@ -25,7 +25,7 @@ router.post('/', function(req, res, next) {
 
 
 router.get('/forgotPassword', (req, res, next) => {
-    res.render('/forgotPassword');
+    res.render('login/forgotPassword');
 });
 
 router.post('/forgotPassword', function(req, res) {
@@ -34,7 +34,7 @@ router.post('/forgotPassword', function(req, res) {
         usuario.resetPassword(function(err) {
             if (err) return next(err);
         });
-        res.render('login/forgotPasswordMessage');
+        res.render('login/forgotPasswordMessage', { errors: {}, usuario: usuario });
     });
 });
 
@@ -43,30 +43,40 @@ router.post('/logout', (req, res, next) => {
     res.redirect('/');
 });
 
-router.post('/resetPassword', (req, res, next) => {
-    Usuario.findOne({ email: req.body.email }, function(err, usuario) {
-        if (!usurio) {
-            return res.render('/login/forgotPassword', { info: { message: 'No existe un usuario con el email ingresado' } });
-        }
-        usuario.resetPassword(function(err) {
-            if (err) return next(err);
-        });
-        res.render('/login/forgotPasswordMessage');
-    });
 
+router.post('/resetPassword', (req, res, next) => {
+    if (req.body.password != req.body.confirm_Password) {
+        res.render('login/resetPassword', { errors: { confirm_password: { message: 'No coinciden los passwords.' } } });
+        return;
+    }
+    Usuario.findOne({ email: req.body.email }, (err, usuario) => {
+        usuario.password = req.body.password;
+        usuario.save((err) => {
+            if (err) {
+                res.render('login/resetPassword', { errors: err.errors, usuario: new Usuario({ email: req.body.email }) });
+            } else {
+                res.redirect('/');
+            }
+        });
+
+    });
 });
 
-router.post('/resetPassword/:token', (req, res, next) => {
+router.get('/resetPassword/:token', (req, res, next) => {
     Token.findOne({ token: req.params.token }, function(err, token) {
         if (!token) {
-            return res.status(400).send({ type: 'not-verified', msg: 'no existe el token' })
+            return res.status(400).send({ type: 'not-verified', msg: 'no existe el token' });
+
         }
-    });
-    Usuario.findById({ _id: token._userId }, (err, usuario) => {
-        if (!usuario) {
-            return res.status(400).send({ type: 'not-verified', msg: 'NO existe el token asociado a un usuario' })
-        }
-        res.render('login/resetPassword', { errors: {}, usuario: usuario });
+        Usuario.findById(token._userId, (err, usuario) => {
+            if (!usuario) {
+                return res.status(400).send({ type: 'not-verified', msg: 'NO existe el token asociado a un usuario' });
+            } else {
+                res.render('login/resetPassword', { errors: {}, usuario: usuario });
+            }
+        });
     });
 });
+
+
 module.exports = router;

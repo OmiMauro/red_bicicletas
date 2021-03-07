@@ -89,8 +89,8 @@ usuarioSchema.methods.resetPassword = function(password) {
         var optionsEmail = {
             from: 'no-reply@red-de-Bicicletas',
             to: email,
-            subject: 'Reseteo de contrasena',
-            text: "Hola. Por favor ingrese al siguiente enlace para resetear su contraseña.\n\n" + 'http://localhost:3000' + '\/resetPassword\/' + token.token,
+            subject: 'Reseteo de clave',
+            text: "Hola. Por favor ingrese al siguiente enlace para resetear su contraseña.\n\n" + 'http://localhost:3000' + '\/login\/resetPassword\/' + token.token,
         };
         mailer.sendMail(optionsEmail, (err) => {
             if (err) { return console.log(err) }
